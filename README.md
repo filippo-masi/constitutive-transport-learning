@@ -125,6 +125,3 @@ See [DATA.md](data/DATA.md) for serialized dataset schemas,
 }
 ```
 
-Machine-readable citation metadata are available in
-[`CITATION.cff`](CITATION.cff).
-

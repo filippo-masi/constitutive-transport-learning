@@ -12,6 +12,10 @@ The module provides:
 
 Convexity is enforced structurally through nonnegative weights and convex,
 nondecreasing activation functions.
+
+For more, see: Amos B., Xu L., Kolter J.Z., 2017.
+                Input Convex Neural Networks,
+                Proceedings of the 34th International Conference on Machine Learning 70, 146-155.
 """
 
 import torch
