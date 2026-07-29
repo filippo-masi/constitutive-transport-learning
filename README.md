@@ -29,17 +29,17 @@ The implementation couples two neural parameterizations:
 </p>
 
 
-## Setup
+### Setup
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-## Experiments
+### Experiments
 
 Run all commands from the repository root.
 
-### Inference from supplied checkpoints
+#### Inference from supplied checkpoints
 
 ```bash
 python drucker_prager_inference.py
@@ -51,7 +51,7 @@ loads a checkpoint with `weights_only=True`, solves for the initial elastic
 strain, integrates the unseen protocol, and displays a reference-versus-model
 plot.
 
-### Training
+#### Training
 
 ```bash
 python drucker_prager_training.py
@@ -69,7 +69,7 @@ HARD_THERMO_EPOCHS=2 python *_training.py
 ```
 
 
-## Tests
+### Tests
 
 Unit tests to verify the physical and numerical methods encoded by the implementation:
 
@@ -85,7 +85,7 @@ Unit tests to verify the physical and numerical methods encoded by the implement
 python -m unittest discover -s tests -v
 ```
 
-## Repository layout
+### Repository layout
 
 ```text
 hard_thermodynamics/     Local neural architectures and integrators
@@ -97,7 +97,7 @@ docs/                    Reproducibility and release documentation
 *.py                     Benchmark training and inference entry points
 ```
 
-## Citation
+### How to cite
 
 ```bibtex
 @article{masi2026learning,
