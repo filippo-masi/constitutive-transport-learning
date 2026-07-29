@@ -1,16 +1,11 @@
 <div align="center">
 
-# Hard-constrained thermodynamic constitutive learning
+# Hard-constrained thermodynamic constitutive learning of inelastic material models
 
-Companion research code for learning inelastic constitutive models from
-stress–strain histories while enforcing energy consistency and
-non-negative dissipation by construction.
-
-[Paper](https://arxiv.org/abs/2605.16837)
 
 </div>
 
-This repository accompanies:
+This repository accompanies the following [paper](https://arxiv.org/abs/2605.16837):
 
 > Filippo Masi, “Learning inelastic constitutive models from stress–strain
 > data under hard thermodynamic constraints,” Computer Methods in Applied Mechanics and Engineering (In press), 2026.
@@ -19,13 +14,14 @@ The implementation couples two neural parameterizations:
 
 - a convex or partially input-convex free energy
   $`\psi_{\boldsymbol{\theta}}(\boldsymbol{s})`$, whose derivatives define
-  stress and internal thermodynamic forces; and
+  stress and internal thermodynamic forces,
 - a state-dependent transport operator
   $`\mathbb{L}_{\boldsymbol{\theta}}`$, constructed as
   $`\mathbb{T}_{\boldsymbol{\theta}}
   \mathbb{T}_{\boldsymbol{\theta}}^\mathsf{T}
   +\mathbb{L}^{\mathrm{skw}}_{\boldsymbol{\theta}}`$.
    
+  
 <p align="center">
   <img src="assets/figure_1.png"
        alt="Overview of constitutive-model discovery with hard-constrained non-equilibrium thermodynamics."
