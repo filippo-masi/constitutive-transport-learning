@@ -16,6 +16,8 @@ nondecreasing activation functions.
 For more, see: Amos B., Xu L., Kolter J.Z., 2017.
                 Input Convex Neural Networks,
                 Proceedings of the 34th International Conference on Machine Learning 70, 146-155.
+                
+Author: Filippo Masi
 """
 
 import torch

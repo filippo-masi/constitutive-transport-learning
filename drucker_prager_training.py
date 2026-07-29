@@ -1,4 +1,7 @@
-"""Train the hard-thermodynamic operator network on Drucker–Prager data."""
+"""
+Train the hard-thermodynamic operator network on Drucker–Prager data.
+Author: Filippo Masi
+"""
 
 import os
 import pickle

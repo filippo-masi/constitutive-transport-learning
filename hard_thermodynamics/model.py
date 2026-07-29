@@ -19,6 +19,7 @@ The following attributes must be configured:
     model.rate_interp  # callable: rate_interp(t, protocol_indices)
     model.step_size    # fixed integration step
 
+Author: Filippo Masi
 """
 
 import torch

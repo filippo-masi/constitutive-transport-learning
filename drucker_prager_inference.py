@@ -1,4 +1,7 @@
-"""Run inference for unseen Drucker–Prager loading protocols."""
+"""
+Run inference for unseen Drucker–Prager loading protocols.
+Author: Filippo Masi
+"""
 
 import pickle
 

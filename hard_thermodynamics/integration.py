@@ -12,6 +12,7 @@ The two-half-step result is retained after an accepted step. Trial steps are
 also clipped at every strain-rate knot, which is essential when
 ``BatchZOHRate`` supplies a discontinuous, zero-order-held loading rate.
 
+Author: Filippo Masi
 """
 
 import math

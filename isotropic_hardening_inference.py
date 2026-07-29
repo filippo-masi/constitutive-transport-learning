@@ -1,4 +1,7 @@
-"""Run inference for unseen loading protocols for elasto-plasticity with isotropic nonlinear hardening."""
+"""
+Run inference for unseen loading protocols for elasto-plasticity with isotropic nonlinear hardening.
+Author: Filippo Masi
+"""
 
 import pickle
 

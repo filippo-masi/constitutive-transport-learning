@@ -1,4 +1,7 @@
-"""Train the model on elasto-plasticity with isotropic hardening."""
+"""
+Train the model on elasto-plasticity with isotropic hardening.
+Author: Filippo Masi
+"""
 
 import os
 import pickle
