@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the associated paper."
+title: "Hard-constrained thermodynamic constitutive learning"
+type: software
+authors:
+  - family-names: Masi
+    given-names: Filippo
+version: 0.1.0
+date-released: 2026-07-29
+preferred-citation:
+  type: article
+  title: "Learning inelastic constitutive models from stress–strain data under hard thermodynamic constraints"
+  authors:
+    - family-names: Masi
+      given-names: Filippo
+  year: 2026
+  identifiers:
+    - type: doi
+      value: "10.48550/arXiv.2605.16837"
+  url: "https://arxiv.org/abs/2605.16837"
