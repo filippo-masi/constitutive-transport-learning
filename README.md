@@ -1,6 +1,6 @@
 <div align="center">
 
-# Hard-constrained thermodynamic constitutive learning of inelastic material models
+# Learning inelastic material models under hard thermodynamic constraints
 
 
 </div>
@@ -10,16 +10,16 @@ This repository accompanies the following [paper](https://arxiv.org/abs/2605.168
 > Filippo Masi, “Learning inelastic constitutive models from stress–strain
 > data under hard thermodynamic constraints,” Computer Methods in Applied Mechanics and Engineering (In press), 2026.
 
-The implementation couples two neural parameterizations:
+The framework couples two neural parameterizations:
 
-- a convex or partially input-convex free energy
+- a (convex or partially input-convex) free energy
   $`\psi_{\boldsymbol{\theta}}(\boldsymbol{s})`$, whose derivatives define
-  stress and internal thermodynamic forces,
+  stress and internal thermodynamic forces (first law of thermodynamics),
 - a state-dependent transport operator
   $`\mathbb{L}_{\boldsymbol{\theta}}`$, constructed as
   $`\mathbb{T}_{\boldsymbol{\theta}}
   \mathbb{T}_{\boldsymbol{\theta}}^\mathsf{T}
-  +\mathbb{L}^{\mathrm{skw}}_{\boldsymbol{\theta}}`$.
+  +\mathbb{L}^{\mathrm{skw}}_{\boldsymbol{\theta}}`$ (second law of thermodynamics).
    
   
 <p align="center">
