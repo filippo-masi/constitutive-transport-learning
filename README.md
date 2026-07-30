@@ -46,9 +46,7 @@ python drucker_prager_training.py
 python isotropic_hardening_training.py
 ```
 
-Retraining writes new files named `*_retrained.pt`; the supplied checkpoints
-are not overwritten. Training is intentionally configured for the full epoch
-counts used by the draft and can take substantial time on CPU.
+Training writes new files named `*_retrained.pt`, without overwriting the corresponding checkpoints.
 
 For a one-update smoke run:
 
