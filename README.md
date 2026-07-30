@@ -39,18 +39,6 @@ python -m pip install -r requirements.txt
 
 Run all commands from the repository root.
 
-#### Inference from supplied checkpoints
-
-```bash
-python drucker_prager_inference.py
-python isotropic_hardening_inference.py
-```
-
-Each script reconstructs the model and normalization from the training data,
-loads a checkpoint with `weights_only=True`, solves for the initial elastic
-strain, integrates the unseen protocol, and displays a reference-versus-model
-plot.
-
 #### Training
 
 ```bash
@@ -67,6 +55,17 @@ For a one-update smoke run:
 ```bash
 HARD_THERMO_EPOCHS=2 python *_training.py
 ```
+#### Inference
+
+```bash
+python drucker_prager_inference.py
+python isotropic_hardening_inference.py
+```
+
+Each script reconstructs the model and normalization from the training data,
+loads a checkpoint with `weights_only=True`, solves for the initial elastic
+strain, integrates the unseen protocol, and displays a reference-versus-model
+plot.
 
 
 ### Tests
@@ -83,18 +82,6 @@ Unit tests to verify the physical and numerical methods encoded by the implement
 
 ```bash
 python -m unittest discover -s tests -v
-```
-
-### Repository layout
-
-```text
-hard_thermodynamics/     Local neural architectures and integrators
-tests/                   Focused scientific unit tests
-data/                    Training and inference trajectories
-checkpoints/             Canonical and archived model state dictionaries
-assets/                  README figure
-docs/                    Reproducibility and release documentation
-*.py                     Benchmark training and inference entry points
 ```
 
 ### How to cite
