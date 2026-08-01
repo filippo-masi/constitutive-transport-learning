@@ -5,7 +5,6 @@ type: software
 authors:
   - family-names: Masi
     given-names: Filippo
-version: 0.1.0
 date-released: 2026-07-29
 preferred-citation:
   type: article
@@ -16,5 +15,5 @@ preferred-citation:
   year: 2026
   identifiers:
     - type: doi
-      value: "10.48550/arXiv.2605.16837"
-  url: "https://arxiv.org/abs/2605.16837"
+      value: "10.1016/j.cma.2026.119260"
+  url: "https://doi.org/10.1016/j.cma.2026.119260"

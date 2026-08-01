@@ -5,7 +5,7 @@
 
 </div>
 
-This repository accompanies the following [paper](https://arxiv.org/abs/2605.16837):
+This repository accompanies the following [paper](https://doi.org/10.1016/j.cma.2026.119260):
 
 > Filippo Masi, “Learning inelastic constitutive models from stress–strain
 > data under hard thermodynamic constraints,” Computer Methods in Applied Mechanics and Engineering (In press), 2026.
@@ -89,9 +89,9 @@ python -m unittest discover -s tests -v
   title   = {Learning inelastic constitutive models from stress--strain data
              under hard thermodynamic constraints},
   author  = {Masi, Filippo},
-  journal = {arXiv preprint arXiv:2605.16837},
+  journal = {Computer Methods in Applied Mechanics and Engineering},
   year    = {2026},
-  doi     = {10.48550/arXiv.2605.16837}
+  doi     = {https://doi.org/10.1016/j.cma.2026.119260}
 }
 ```
 

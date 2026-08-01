@@ -1,5 +1,5 @@
 """
-Run inference for unseen Drucker–Prager loading protocols.
+Run inference for unseen loading protocols for elasto-plasticity with isotropic nonlinear hardening.
 Author: Filippo Masi
 """
 
@@ -17,6 +17,7 @@ from hard_thermodynamics import (
     ICNN,
     get_params,
     integrate_inference,
+    integrate_training
 )
 
 
@@ -27,15 +28,15 @@ from hard_thermodynamics import (
 np.random.seed(1)
 torch.manual_seed(1)
 
-torch.set_num_threads(1)
-torch.set_num_interop_threads(1)
+# torch.set_num_threads(1)
+# torch.set_num_interop_threads(1)
 
 # This must match the precision used to train the checkpoint.
-dtype = torch.float64
+dtype = torch.float32
 
-training_data_path = "./data/Drucker_Prager/training_data.pkl"
-inference_data_path = "./data/Drucker_Prager/inference_data.pkl"
-checkpoint_path = "./checkpoints/drucker_prager.pt"
+training_data_path = "./data/elasto_plastic/training_data.pkl"
+inference_data_path = "./data/elasto_plastic/inference_data.pkl"
+results_path = "./checkpoints/elasto_plasticity.pt"
 
 
 # ---------------------------------------------------------------------------
@@ -54,9 +55,17 @@ with open(training_data_path, "rb") as file:
     n_training_snapshots,
     _n_training_protocols,
     dim,
-    _training_stop,
 ) = training_data
 
+if dtype == torch.float32:
+    training_strain = np.float32(training_strain)
+    training_strain_tdt = np.float32(training_strain_tdt)
+    training_stress = np.float32(training_stress)
+elif dtype == torch.float64:
+    training_strain = np.float64(training_strain)
+    training_strain_tdt = np.float64(training_strain_tdt)
+    training_stress = np.float64(training_stress)
+    
 numpy_dtype = np.float64 if dtype == torch.float64 else np.float32
 
 training_strain = training_strain.astype(numpy_dtype, copy=False)
@@ -66,9 +75,10 @@ training_stress = training_stress.astype(numpy_dtype, copy=False)
 # The inference protocols use the same physical time increment as training.
 step_size = numpy_dtype(1.0 / n_training_snapshots)
 
-training_strain_rate = (
-    training_strain_tdt - training_strain
-) / step_size
+training_strain_rate = np.zeros_like(training_strain)
+for i in range(training_strain[:,:,0].shape[1]):
+    training_strain_rate[:,i] = np.gradient(training_strain[:,i,0],step_size, edge_order=1)[:,None]
+
 
 # Reconstruct exactly the normalization used during training.
 prm_strain = get_params(training_strain)
@@ -90,12 +100,14 @@ norm_params = [
 ]
 
 evolution_architecture = [
-    dim,
+    dim_total,
     dim_total**2,
-    [64, 64, 64],
-    "softplus",
+    [64, 64, 64, 64],
+    "relu",
 ]
 
+# The partially input-convex network represents the scalar free-energy
+# potential as a function of the observable strain and hidden state.
 energy_net = ICNN(
     dim,
     [64, 64],
@@ -103,6 +115,7 @@ energy_net = ICNN(
     activation="softplus",
     dtype=dtype,
 )
+
 
 model = HardThermodynamicsOpNet(
     evolution_architecture,
@@ -125,12 +138,12 @@ model.rate_interp = BatchZOHRate(
 )
 
 model.norm_init_cond = torch.nn.Parameter(
-    torch.zeros((6, dim), dtype=dtype),
+    torch.zeros((1, dim), dtype=dtype),
     requires_grad=True,
 )
 
 state_dict = torch.load(
-    checkpoint_path,
+    results_path,
     map_location="cpu",
     weights_only=True,
 )
@@ -152,6 +165,7 @@ print("- model loaded")
 # ---------------------------------------------------------------------------
 # Determine elastic strain from the prescribed initial stress
 # ---------------------------------------------------------------------------
+
 
 def initial_condition_residual(
     normalized_elastic_strain,
@@ -178,9 +192,8 @@ def initial_condition_residual(
         target_stress,
         model.prm_stress,
     )
-
-    return normalized_predicted_stress - normalized_target_stress
-
+    # print(normalized_predicted_stress.shape,normalized_elastic_strain.shape)
+    return normalized_predicted_stress - normalized_target_stress+1e-5
 
 # ---------------------------------------------------------------------------
 # Load and preprocess the unseen loading protocols
@@ -198,6 +211,16 @@ with open(inference_data_path, "rb") as file:
     n_inference_protocols,
     inference_dim,
 ) = inference_data
+
+if dtype == torch.float32:
+    inference_strain = np.float32(inference_strain)
+    inference_strain_tdt = np.float32(inference_strain_tdt)
+    inference_stress = np.float32(inference_stress)
+elif dtype == torch.float64:
+    inference_strain = np.float64(inference_strain)
+    inference_strain_tdt = np.float64(inference_strain_tdt)
+    inference_stress = np.float64(inference_stress)
+
 
 if inference_dim != dim:
     raise ValueError(
@@ -218,15 +241,18 @@ inference_stress = inference_stress.astype(
     copy=False,
 )
 
-inference_strain_rate = (
-    inference_strain_tdt - inference_strain
-) / step_size
+# inference_strain_rate = (
+#     inference_strain_tdt - inference_strain
+# ) / step_size
+
+inference_strain_rate = np.zeros_like(inference_strain)
+for i in range(inference_strain[:,:,0].shape[1]):
+    inference_strain_rate[:,i] = np.gradient(inference_strain[:,i,0],step_size, edge_order=1)[:,None]
+
 
 inference_strain_tensor = torch.from_numpy(inference_strain)
 inference_stress_tensor = torch.from_numpy(inference_stress)
-
 protocol_indices = np.arange(n_inference_protocols)
-
 # Construct exactly one time value per inference snapshot. This avoids possible
 # off-by-one errors caused by floating-point use of torch.arange(start, stop, dt).
 time_grid = (
@@ -235,7 +261,6 @@ time_grid = (
 )
 
 model.step_size = step_size
-model.solver = "euler"
 model.rate_interp = BatchZOHRate(
     time_grid,
     inference_strain_rate,
@@ -261,40 +286,45 @@ normalized_initial_strain = xiroot(
     params=(initial_stress,),
     method="newton",
     maxiter=1_000,
-    step=2.0e-2,
+    # step=2.0e-2,
     verbose=True,
 )
 
-initial_conditions = model.DeNormalize(
+initial_strain = model.DeNormalize(
     normalized_initial_strain,
     model.prm_strain,
 )
 
-
+initial_conditions = initial_strain
 # ---------------------------------------------------------------------------
 # Integrate the inferred stress response
 # ---------------------------------------------------------------------------
 
 with P.cached():
-    state_solution, stress_solution, solver_info = integrate_inference(
-        model=model,
-        initial_conditions=initial_conditions,
-        t_eval=time_grid,
-        idx=protocol_indices,
-        initial_step=step_size,
-        minimum_step=1.0e-8,
-        maximum_step=step_size,
-        relative_tolerance=1.0e-3,
-        absolute_tolerance=1.0e-4,
-    )
-
+    # state_solution, stress_solution, solver_info = integrate_inference(
+    #     model=model,
+    #     initial_conditions=initial_conditions,
+    #     t_eval=time_grid,
+    #     idx=protocol_indices,
+    #     initial_step=step_size,
+    #     minimum_step=1.0e-8,
+    #     maximum_step=step_size,
+    #     relative_tolerance=1.0e-3,
+    #     absolute_tolerance=1.0e-4,
+    # )
+    state_solution, stress_solution, = integrate_training(
+            model,
+            initial_conditions,
+            time_grid,
+            protocol_indices,
+        )
 
 # ---------------------------------------------------------------------------
 # Compare the reference and predicted responses
 # ---------------------------------------------------------------------------
 
 protocol = 0
-component = 1  # Deviatoric strain ε_s and stress q.
+component = 0 
 
 strain_to_plot = (
     inference_strain_tensor[:, protocol, component]
@@ -341,8 +371,8 @@ ax.plot(
     label="prediction",
 )
 
-ax.set_xlabel(r"$\varepsilon_s$ (%)")
-ax.set_ylabel(r"$q$ (MPa)")
+ax.set_xlabel(r"$\varepsilon$ (-)")
+ax.set_ylabel(r"$\sigma$ (kPa)")
 ax.legend(loc="best")
 
 fig.tight_layout()
