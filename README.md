@@ -42,6 +42,7 @@ Run all commands from the repository root.
 #### Training
 
 ```bash
+python elasto_plastic_training.py
 python drucker_prager_training.py
 python isotropic_hardening_training.py
 ```
@@ -56,6 +57,7 @@ HARD_THERMO_EPOCHS=2 python *_training.py
 #### Inference
 
 ```bash
+python elasto_plastic_inference.py
 python drucker_prager_inference.py
 python isotropic_hardening_inference.py
 ```
