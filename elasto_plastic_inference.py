@@ -193,7 +193,7 @@ def initial_condition_residual(
         model.prm_stress,
     )
     # print(normalized_predicted_stress.shape,normalized_elastic_strain.shape)
-    return normalized_predicted_stress - normalized_target_stress+1e-5
+    return normalized_predicted_stress - normalized_target_stress
 
 # ---------------------------------------------------------------------------
 # Load and preprocess the unseen loading protocols
