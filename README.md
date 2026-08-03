@@ -7,8 +7,8 @@
 
 This repository accompanies the following [paper](https://doi.org/10.1016/j.cma.2026.119260):
 
-> Filippo Masi, “Learning inelastic constitutive models from stress–strain
-> data under hard thermodynamic constraints,” Computer Methods in Applied Mechanics and Engineering (In press), 2026.
+> Filippo Masi, "Learning inelastic constitutive models from stress–strain
+> data under hard thermodynamic constraints." Computer Methods in Applied Mechanics and Engineering 461 (2026), 119260.
 
 The framework couples two neural parameterizations:
 
@@ -92,6 +92,8 @@ python -m unittest discover -s tests -v
              under hard thermodynamic constraints},
   author  = {Masi, Filippo},
   journal = {Computer Methods in Applied Mechanics and Engineering},
+  volume  = {461},
+  pages   = {119260},
   year    = {2026},
   doi     = {https://doi.org/10.1016/j.cma.2026.119260}
 }
